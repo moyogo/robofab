@@ -575,7 +575,7 @@ class BaseGlyph(RBaseObject):
 		"""Using fontTools.agl, assign Unicode list to the glyph"""
 		from fontTools.agl import AGL2UV
 		if self.name in AGL2UV:
-			self.str = AGL2UV[self.name]
+			self.unicode = AGL2UV[self.name]
 			self._hasChanged()
 
 	# Metrics
@@ -1191,9 +1191,9 @@ class BaseGlyph(RBaseObject):
 		mp = DigestPointPen()
 		self.drawPoints(mp)
 		if pointsOnly:
-			return "%s|%d|%s"%(mp.getDigestPointsOnly(), self.width, self.str)
+			return "%s|%d|%s"%(mp.getDigestPointsOnly(), self.width, self.unicode)
 		else:
-			return "%s|%d|%s"%(mp.getDigest(), self.width, self.str)
+			return "%s|%d|%s"%(mp.getDigest(), self.width, self.unicode)
 
 	def _getStructure(self):
 		"""Calculate a digest of points, things in this glyph, but NOT coordinates."""

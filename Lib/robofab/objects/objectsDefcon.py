@@ -814,17 +814,17 @@ class RGlyph(BaseGlyph):
 	unicodes = property(_get_unicodes, _set_unicodes, doc="all unicode values for the glyph")
 
 	def _get_unicode(self):
-		return self._object.str
+		return self._object.unicode
 
 	def _set_unicode(self, value):
-		self._object.str = value
+		self._object.unicode = value
 
-	str = property(_get_unicode, _set_unicode, doc="first unicode value for the glyph")
+	unicode = property(_get_unicode, _set_unicode, doc="first unicode value for the glyph")
 
 	# Metrics
 
 	def _get_box(self):
-		bounds = self._obejct.bounds
+		bounds = self._object.bounds
 		if bounds is None:
 			bounds = (0, 0, 0, 0)
 		return bounds

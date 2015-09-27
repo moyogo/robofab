@@ -593,7 +593,7 @@ class UFOWriter(object):
 			raise UFOLibError("The UFO located at this path is a higher version (%d) than the version (%d) that is trying to be written. This is not supported." % (previousFormatVersion, formatVersion))
 		# handle the layer contents
 		self.layerContents = {}
-		if previousFormatVersion >= 3:
+		if previousFormatVersion is not None and previousFormatVersion >= 3:
 			# already exists
 			self._readLayerContents()
 		else:
@@ -1214,7 +1214,7 @@ def writePlistAtomically(obj, path):
 	data = f.getvalue()
 	writeFileAtomically(data, path)
 
-def writeFileAtomically(text, path, encoding=None):
+def writeFileAtomically(text, path, encoding="utf-8"):
 	"""
 	Write text into a file at path. Do this sort of atomically
 	making it harder to cause corrupt files. This also checks to see

@@ -1294,12 +1294,12 @@ class RGlyph(BaseGlyph):
 	baseName = property(_get_baseName, doc="")
 	
 	def _get_unicode(self):
-		return self._object.str
+		return self._object.unicode
 
 	def _set_unicode(self, value):
-		self._object.str = value
+		self._object.unicode = value
 
-	str = property(_get_unicode, _set_unicode, doc="unicode")
+	unicode = property(_get_unicode, _set_unicode, doc="unicode")
 	
 	def _get_unicodes(self):
 		return self._object.unicodes
