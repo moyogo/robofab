@@ -38,7 +38,7 @@ class AngledMarginPen(BasePen):
 		self.currentPt = None
 	
 	def _getAngled(self, pt):
-		print "_getAngled", pt
+		print("_getAngled", pt)
 		r = (self.width + (pt[1] / math.tan(self._angle)))-pt[0]
 		l = pt[0]-((pt[1] / math.tan(self._angle)))
 		if self._right is None:
@@ -61,14 +61,14 @@ class AngledMarginPen(BasePen):
 
 	def _lineTo(self, pt):
 		self._addMoveTo()
-		print "_lineTo"
+		print("_lineTo")
 		self._getAngled(pt)
 
 	def _curveToOne(self, pt1, pt2, pt3):
 		step = 1.0/self.maxSteps
-		factors = range(0, self.maxSteps+1)
+		factors = list(range(0, self.maxSteps+1))
 		for i in factors:
-			print "_curveToOne", i
+			print("_curveToOne", i)
 			pt = _getCubicPoint(i*step, self.currentPt, pt1, pt2, pt3)
 			self._getAngled(pt)
 		self.currentPt = pt3
@@ -76,7 +76,7 @@ class AngledMarginPen(BasePen):
 	def _qCurveToOne(self, bcp, pt):
 		self._addMoveTo()
 		# add curve tracing magic here.
-		print "_qCurveToOne"
+		print("_qCurveToOne")
 		self._getAngled(pt)
 		self.currentPt = pt3
 
@@ -139,6 +139,6 @@ if __name__ == "__main__":
 		glyphSet = {}
 		testPen = AngledMarginPen(glyphSet, width=0, italicAngle=10)
 		testGlyph.draw(testPen)
-		print testPen.margin
+		print(testPen.margin)
 
 	angledMarginPenTest()
