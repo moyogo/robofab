@@ -1,3 +1,4 @@
+from fontTools.misc.py23 import tobytes, tostr
 """A separate module for glyphname to filename functions.
 
 glyphNameToShortFileName() generates a non-clashing filename for systems with
@@ -16,10 +17,11 @@ def glyphNameToShortFileName(glyphName, glyphSet):
 	- finally, the candidate glyphname is checked against the contents.plist
 	and a incrementing number is added at the end if there is a clash.
 	"""
-	import binascii, struct, string
+	import binascii, struct
 	ext = ".glif"
-	ok = string.ascii_letters + string.digits + " _"
-	h = binascii.hexlify(struct.pack(">l", binascii.crc32(glyphName)))
+	ok = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _"
+	h = binascii.hexlify(struct.pack(">L", binascii.crc32(tobytes(glyphName)) & 0xffffffff))
+	h = tostr(h)
 	n = ''
 	for c in glyphName:
 		if c in ok:
