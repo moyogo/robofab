@@ -28,12 +28,12 @@ def _gatherTestCasesFromCallerByMagic():
 
 def _gatherTestCasesFromDict(d):
 	testCases = []
-	for ob in list(d.values()):
+	for ob in d.values():
 		if isinstance(ob, type) and issubclass(ob, unittest.TestCase):
 			testCases.append(ob)
 	return testCases
 
-	
+
 def runTests(testCases=None, verbosity=1):
 	"""Run a series of tests."""
 	if testCases is None:

@@ -56,7 +56,7 @@ class RBaseObject(object):
 		elif self.getParent() is not None:
 			n.setParent(self.getParent())
 		dont = ['getParent']
-		for k in list(self.__dict__.keys()):
+		for k in self.__dict__.keys():
 			if k in dont:
 				continue
 			elif isinstance(self.__dict__[k], (RBaseObject, BaseLib)):
@@ -156,10 +156,8 @@ class BaseFont(RBaseObject):
 		except TypeError:
 			return False
 		# same name and length. start comparing glyphs
-		namesSelf = list(self.keys())
-		namesOther = list(other.keys())
-		namesSelf.sort()
-		namesOther.sort()
+		namesSelf = sorted(self.keys())
+		namesOther = sorted(other.keys())
 		for i in range(len(namesSelf)):
 			if namesSelf[i] != namesOther[i]:
 				return False
@@ -171,10 +169,10 @@ class BaseFont(RBaseObject):
 	# dict behavior
 
 	def keys(self):
-		return list(self.layers.getDefaultLayer().keys())
+		return self.layers.getDefaultLayer().keys()
 
 	def __iter__(self):
-		names = list(self.keys())
+		names = self.keys()
 		while names:
 			name = names[0]
 			yield self[name]
@@ -284,7 +282,7 @@ class BaseLayerSet(RBaseObject):
 		raise NotImplementedError
 
 	def __iter__(self):
-		names = list(self.keys())
+		names = self.keys()
 		while names:
 			name = names[0]
 			yield self[name]
@@ -350,7 +348,7 @@ class BaseLayer(RBaseObject):
 
 	def __iter__(self):
 		print("-" * 100)
-		names = list(self.keys())
+		names = self.keys()
 		while names:
 			name = names[0]
 			yield self[name]
@@ -445,7 +443,7 @@ class BaseLayer(RBaseObject):
 					if accentAnchor.name in anchors:
 						anchors[accentAnchor.name] = shift[0]+accentAnchor.position[0], shift[1]+accentAnchor.position[1]
 		if printErrors:
-			for px in list(errors.keys()):
+			for px in errors.keys():
 				print(px)
 		return destGlyph
 
@@ -469,9 +467,9 @@ class BaseLayer(RBaseObject):
 		errors = {}
 		if not isinstance(factor, tuple):
 			factor = factor, factor
-		minGlyphNames = list(minFont.keys())
-		maxGlyphNames = list(maxFont.keys())
-		allGlyphNames = list(Set(minGlyphNames) | Set(maxGlyphNames))
+		minGlyphNames = minFont.keys()
+		maxGlyphNames = maxFont.keys()
+		allGlyphNames = Set(minGlyphNames) | Set(maxGlyphNames)
 		if doProgress:
 			from robofab.interface.all.dialogs import ProgressBar
 			progress = ProgressBar('Interpolating...', len(allGlyphNames))
@@ -673,7 +671,7 @@ class BaseGlyph(RBaseObject):
 		#now, for every contour, determine which contours it intersects
 		#as we go, we will also store contours that it doesn't intersct
 		#and we store this value for both contours
-		allIndexes = list(contourDict.keys())
+		allIndexes = contourDict.keys()
 		for contourIndex in allIndexes:
 			for otherContourIndex in allIndexes:
 				if otherContourIndex != contourIndex:
@@ -864,7 +862,7 @@ class BaseGlyph(RBaseObject):
 		newAnchors = newData['anchors']
 		if len(selfAnchors) > 0:
 			selfAnchors, otherAnchors = self._mathAnchorCompare(selfAnchors, otherAnchors)
-			anchorNames = list(selfAnchors.keys())
+			anchorNames = selfAnchors.keys()
 			for anchorName in anchorNames:
 				selfAnchorList = selfAnchors[anchorName]
 				otherAnchorList = otherAnchors[anchorName]
@@ -879,7 +877,7 @@ class BaseGlyph(RBaseObject):
 		newComponents = newData['components']
 		if len(selfComponents) > 0:
 			selfComponents, otherComponents = self._mathComponentCompare(selfComponents, otherComponents)
-			componentNames = list(selfComponents.keys())
+			componentNames = selfComponents.keys()
 			for componentName in componentNames:
 				selfComponentList = selfComponents[componentName]
 				otherComponentList = otherComponents[componentName]
@@ -941,7 +939,7 @@ class BaseGlyph(RBaseObject):
 			if name not in otherAnchors:
 				otherAnchors[name] = []
 			otherAnchors[name].append(pt)
-		compatAnchors = Set(list(selfAnchors.keys())) & Set(list(otherAnchors.keys()))
+		compatAnchors = Set(selfAnchors.keys()) & Set(otherAnchors.keys())
 		finalSelfAnchors = {}
 		finalOtherAnchors = {}
 		for name in compatAnchors:
@@ -954,9 +952,9 @@ class BaseGlyph(RBaseObject):
 			selfCount = len(selfList)
 			otherCount = len(otherList)
 			if selfCount != otherCount:
-				r = list(range(min(selfCount, otherCount)))
+				r = range(min(selfCount, otherCount))
 			else:
-				r = list(range(selfCount))
+				r = range(selfCount)
 			for i in r:
 				finalSelfAnchors[name].append(selfList[i])
 				finalOtherAnchors[name].append(otherList[i])
@@ -975,7 +973,7 @@ class BaseGlyph(RBaseObject):
 			if baseName not in otherComponents:
 				otherComponents[baseName] = []
 			otherComponents[baseName].append(transformation)
-		compatComponents = Set(list(selfComponents.keys())) & Set(list(otherComponents.keys()))
+		compatComponents = Set(selfComponents.keys()) & Set(otherComponents.keys())
 		finalSelfComponents = {}
 		finalOtherComponents = {}
 		for baseName in compatComponents:
@@ -988,9 +986,9 @@ class BaseGlyph(RBaseObject):
 			selfCount = len(selfList)
 			otherCount = len(otherList)
 			if selfCount != otherCount:
-				r = list(range(min(selfCount, otherCount)))
+				r = range(min(selfCount, otherCount))
 			else:
-				r = list(range(selfCount))
+				r = range(selfCount)
 			for i in r:
 				finalSelfComponents[baseName].append(selfList[i])
 				finalOtherComponents[baseName].append(otherList[i])
@@ -1147,7 +1145,7 @@ class BaseGlyph(RBaseObject):
 	def _interpolateComponents(self, factor, minComponents, maxComponents):
 		newComponents = []
 		minComponents, maxComponents = self._mathComponentCompare(minComponents, maxComponents)
-		componentNames = list(minComponents.keys())
+		componentNames = minComponents.keys()
 		for componentName in componentNames:
 			minComponentList = minComponents[componentName]
 			maxComponentList = maxComponents[componentName]
@@ -1164,7 +1162,7 @@ class BaseGlyph(RBaseObject):
 	def _interpolateAnchors(self, factor, minAnchors, maxAnchors):
 		newAnchors = []
 		minAnchors, maxAnchors = self._mathAnchorCompare(minAnchors, maxAnchors)
-		anchorNames = list(minAnchors.keys())
+		anchorNames = minAnchors.keys()
 		for anchorName in anchorNames:
 			minAnchorList = minAnchors[anchorName]
 			maxAnchorList = maxAnchors[anchorName]
@@ -1210,7 +1208,7 @@ class BaseGlyph(RBaseObject):
 		if aParent is not None:
 			n.setParent(aParent)
 		dont = ['_object', 'getParent']
-		for k in list(self.__dict__.keys()):
+		for k in self.__dict__.keys():
 			ok = True
 			if k in dont:
 				continue
@@ -1299,10 +1297,9 @@ class BaseGlyph(RBaseObject):
 		for a in self.anchors:
 			a.transform(matrix)
 
-	def move(self, xxx_todo_changeme, contours=True, components=True, anchors=True):
+	def move(self, pt, contours=True, components=True, anchors=True):
 		"""Move a glyph's items that are flagged as True"""
-		(x, y) = xxx_todo_changeme
-		x, y = roundPt((x, y))
+		x, y = roundPt(pt)
 		for contour in self.contours:
 			contour.move((x, y))
 		for component in self.components:
@@ -1310,9 +1307,9 @@ class BaseGlyph(RBaseObject):
 		for anchor in self.anchors:
 			anchor.move((x, y))
 
-	def scale(self, xxx_todo_changeme1, center=(0, 0)):
+	def scale(self, pt, center=(0, 0)):
 		"""scale the glyph"""
-		(x, y) = xxx_todo_changeme1
+		(x, y) = pt
 		for contour in self.contours:
 			contour.scale((x, y), center=center)
 		for component in self.components:
@@ -1346,9 +1343,9 @@ class BaseGlyph(RBaseObject):
 
 	# Point Inside
 
-	def pointInside(self, xxx_todo_changeme2, evenOdd=0):
+	def pointInside(self, pt, evenOdd=0):
 		"""determine if the point is in the black or white of the glyph"""
-		(x, y) = xxx_todo_changeme2
+		(x, y) = pt
 		from fontTools.pens.pointInsidePen import PointInsidePen
 		font = self.getParent()
 		piPen = PointInsidePen(glyphSet=font, testPoint=(x, y), evenOdd=evenOdd)
@@ -1465,7 +1462,7 @@ class BaseContour(RBaseObject):
 		elif self.getParent() is not None:
 			n.setParent(self.getParent())
 		dont = ['_object', 'points', 'bPoints', 'getParent']
-		for k in list(self.__dict__.keys()):
+		for k in self.__dict__.keys():
 			ok = True
 			if k in dont:
 				continue
@@ -1599,15 +1596,15 @@ class BaseContour(RBaseObject):
 				pen.addPoint((point.x, point.y), segmentType=None, smooth=None, name=name, selected=point.selected)
 		pen.endPath()
 
-	def move(self, xxx_todo_changeme3):
+	def move(self, pt):
 		"""move the contour"""
-		(x, y) = xxx_todo_changeme3
+		(x, y) = pt
 		for point in self.points:
 			point.move((x, y))
 
-	def scale(self, xxx_todo_changeme4, center=(0, 0)):
+	def scale(self, pt, center=(0, 0)):
 		"""scale the contour"""
-		(x, y) = xxx_todo_changeme4
+		(x, y) = pt
 		for point in self.points:
 			point.scale((x, y), center=center)
 
@@ -1639,9 +1636,9 @@ class BaseContour(RBaseObject):
 		rT = rT.skew(radAngle)
 		self.transform(rT)
 
-	def pointInside(self, xxx_todo_changeme5, evenOdd=0):
+	def pointInside(self, pt, evenOdd=0):
 		"""determine if the point is inside or ouside of the contour"""
-		(x, y) = xxx_todo_changeme5
+		(x, y) = pt
 		from fontTools.pens.pointInsidePen import PointInsidePen
 		glyph = self.getParent()
 		font = glyph.getParent()
@@ -1790,7 +1787,7 @@ class BaseSegment(RBaseObject):
 		elif self.getParent() is not None:
 			n.setParent(self.getParent())
 		dont = ['_object', 'getParent', 'offCurve', 'onCurve']
-		for k in list(self.__dict__.keys()):
+		for k in self.__dict__.keys():
 			ok = True
 			if k in dont:
 				continue
@@ -1815,16 +1812,16 @@ class BaseSegment(RBaseObject):
 		"""round all points in the segment"""
 		for point in self.points:
 			point.round()
-	
-	def move(self, xxx_todo_changeme6):
+
+	def move(self, pt):
 		"""move the segment"""
-		(x, y) = xxx_todo_changeme6
+		(x, y) = pt
 		for point in self.points:
 			point.move((x, y))
-	
-	def scale(self, xxx_todo_changeme7, center=(0, 0)):
+
+	def scale(self, pt, center=(0, 0)):
 		"""scale the segment"""
-		(x, y) = xxx_todo_changeme7
+		(x, y) = pt
 		for point in self.points:
 			point.scale((x, y), center=center)
 
@@ -1900,7 +1897,7 @@ class BasePoint(RBaseObject):
 		elif self.getParent() is not None:
 			n.setParent(self.getParent())
 		dont = ['getParent', 'offCurve', 'onCurve']
-		for k in list(self.__dict__.keys()):
+		for k in self.__dict__.keys():
 			ok = True
 			if k in dont:
 				continue
@@ -1924,14 +1921,14 @@ class BasePoint(RBaseObject):
 		"""round the values in the point"""
 		self.x, self.y = roundPt((self.x, self.y))
 
-	def move(self, xxx_todo_changeme8):
+	def move(self, pt):
 		"""Move the point"""
-		(x, y) = xxx_todo_changeme8
+		(x, y) = pt
 		self.x, self.y = addPt((self.x, self.y), (x, y))
-		
-	def scale(self, xxx_todo_changeme9, center=(0, 0)):
+
+	def scale(self, pt, center=(0, 0)):
 		"""scale the point"""
-		(x, y) = xxx_todo_changeme9
+		(x, y) = pt
 		nX, nY = _scalePointFromCenter((self.x, self.y), (x, y), center)
 		self.x = nX
 		self.y = nY
@@ -2004,10 +2001,10 @@ class BaseBPoint(RBaseObject):
 			self.bcpIn = roundPt(self.bcpIn)
 		if pSeg.getParent()._nextSegment(pSeg.index).type != MOVE:
 			self.bcpOut = roundPt(self.bcpOut)
-	
-	def move(self, xxx_todo_changeme10):
+
+	def move(self, pt):
 		"""move the bPoint"""
-		(x, y) = xxx_todo_changeme10
+		(x, y) = pt
 		bcpIn = self.bcpIn
 		bcpOut = self.bcpOut
 		self.anchor = (self.anchor[0] + x, self.anchor[1] + y)
@@ -2016,10 +2013,10 @@ class BaseBPoint(RBaseObject):
 			self.bcpIn = bcpIn
 		if pSeg.getParent()._nextSegment(pSeg.index).type != MOVE:
 			self.bcpOut = bcpOut
-	
-	def scale(self, xxx_todo_changeme11, center=(0, 0)):
+
+	def scale(self, pt, center=(0, 0)):
 		"""scale the bPoint"""
-		(x, y) = xxx_todo_changeme11
+		(x, y) = pt
 		centerX, centerY = center
 		ogCenter = (centerX, centerY)
 		scaledCenter = (centerX * x, centerY * y)
@@ -2208,7 +2205,7 @@ class BaseComponent(RBaseObject):
 		elif self.getParent() is not None:
 			n.setParent(self.getParent())
 		dont = ['getParent', '_object']
-		for k in list(self.__dict__.keys()):
+		for k in self.__dict__.keys():
 			if k in dont:
 				continue
 			elif isinstance(self.__dict__[k], (RBaseObject, BaseLib)):
@@ -2351,7 +2348,7 @@ class BaseAnchor(RBaseObject):
 		elif self.getParent() is not None:
 			n.setParent(self.getParent())
 		dont = ['getParent', '_object']
-		for k in list(self.__dict__.keys()):
+		for k in self.__dict__.keys():
 			if k in dont:
 				continue
 			elif isinstance(self.__dict__[k], (RBaseObject, BaseLib)):
@@ -2375,22 +2372,22 @@ class BaseAnchor(RBaseObject):
 		else:
 			# It's an "old" 'Fab pen
 			pen.addAnchor(self.name, (self.x, self.y))
-	
+
 	def drawPoints(self, pen):
 		"""draw the object with a point pen"""
 		pen.beginPath()
 		pen.addPoint((self.x, self.y), segmentType="move", smooth=False, name=self.name)
 		pen.endPath()
-		
-	def move(self, xxx_todo_changeme12):
+
+	def move(self, pt):
 		"""Move the anchor"""
-		(x, y) = xxx_todo_changeme12
+		(x, y) = pt
 		pX, pY = self.position
 		self.position = (pX+x, pY+y)
-		
-	def scale(self, xxx_todo_changeme13, center=(0, 0)):
+
+	def scale(self, pt, center=(0, 0)):
 		"""scale the anchor"""
-		(x, y) = xxx_todo_changeme13
+		(x, y) = pt
 		pos = self.position
 		self.position = _scalePointFromCenter(pos, (x, y), center)
 
@@ -2570,7 +2567,7 @@ class BaseGroups(dict):
 	def findGlyph(self, glyphName):
 		"""return a list of all groups contianing glyphName"""
 		found = []
-		for i in list(self.keys()):
+		for i in self.keys():
 			l = self[i]
 			if glyphName in l:
 				found.append(i)
@@ -2619,7 +2616,7 @@ class BaseLib(dict):
 			n.setParent(aParent)
 		elif self.getParent() is not None:
 			n.setParent(self.getParent())
-		for k in list(self.keys()):
+		for k in self.keys():
 			n[k] = copy.deepcopy(self[k])
 		return n
 
@@ -2655,10 +2652,10 @@ class BaseKerning(RBaseObject):
 		elif isinstance(key, str):
 			raise RoboFabError('kerning pair must be a tuple: (left, right)')
 		else:
-			keys = list(self.keys())
+			keys = self.keys()
 			if key > len(keys):
 				raise IndexError
-			keys.sort()
+			keys = sorted(keys)
 			pair = keys[key]
 		if pair not in self._kerning:
 			raise IndexError
@@ -2680,8 +2677,8 @@ class BaseKerning(RBaseObject):
 				self._hasChanged()
 		
 	def __len__(self):
-		return len(list(self._kerning.keys()))
-		
+		return len(self._kerning.keys())
+
 	def _hasChanged(self):
 		"""mark the object and it's parent as changed"""
 		self.setChanged(True)
@@ -2690,16 +2687,16 @@ class BaseKerning(RBaseObject):
 	
 	def keys(self):
 		"""return list of kerning pairs"""
-		return list(self._kerning.keys())
-		
+		return self._kerning.keys()
+
 	def values(self):
 		"""return a list of kerning values"""
-		return list(self._kerning.values())
-	
+		return self._kerning.values()
+
 	def items(self):
 		"""return a list of kerning items"""
-		return list(self._kerning.items())
-	
+		return self._kerning.items()
+
 	def has_key(self, pair):
 		return pair in self._kerning
 	
@@ -2717,7 +2714,7 @@ class BaseKerning(RBaseObject):
 		if len(self) == 0:
 			return 0
 		value = 0
-		for i in list(self.values()):
+		for i in self.values():
 			value = value + i
 		return value / float(len(self))
 	
@@ -2732,7 +2729,7 @@ class BaseKerning(RBaseObject):
 		
 	def update(self, kerningDict):
 		"""replace kerning data with the data in the given kerningDict"""
-		for pair in list(kerningDict.keys()):
+		for pair in kerningDict.keys():
 			self[pair] = kerningDict[pair]
 	
 	def clear(self):
@@ -2741,17 +2738,17 @@ class BaseKerning(RBaseObject):
 		
 	def add(self, value):
 		"""add value to all kerning pairs"""
-		for pair in list(self.keys()):
+		for pair in self.keys():
 			self[pair] = self[pair] + value
 		
 	def scale(self, value):
 		"""scale all kernng pairs by value"""
-		for pair in list(self.keys()):
+		for pair in self.keys():
 			self[pair] = self[pair] * value
 			
 	def minimize(self, minimum=10):
 		"""eliminate pairs with value less than minimum"""
-		for pair in list(self.keys()):
+		for pair in self.keys():
 			if abs(self[pair]) < minimum:
 				self[pair] = 0
 	
@@ -2769,7 +2766,7 @@ class BaseKerning(RBaseObject):
 			lgte = [lgte]
 		if isinstance(rgte, str):
 			rgte = [rgte]
-		for pair in list(self.keys()):
+		for pair in self.keys():
 			left, right = pair
 			if left in lgte or right in rgte:
 				if analyzeOnly:
@@ -2791,7 +2788,7 @@ class BaseKerning(RBaseObject):
 			value = value[0]
 		if clearExisting:
 			self.clear()
-		pairs = Set(list(sourceDictOne.keys())) | Set(list(sourceDictTwo.keys()))
+		pairs = Set(sourceDictOne.keys()) | Set(sourceDictTwo.keys())
 		for pair in pairs:
 			s1 = sourceDictOne.get(pair, 0)
 			s2 = sourceDictTwo.get(pair, 0)
@@ -2799,7 +2796,7 @@ class BaseKerning(RBaseObject):
 	
 	def round(self, multiple=10):
 		"""round the kerning pair values to increments of multiple"""
-		for pair in list(self.keys()):
+		for pair in self.keys():
 			value = self[pair]
 			self[pair] = int(round(value / float(multiple))) * multiple
 	
@@ -2813,7 +2810,7 @@ class BaseKerning(RBaseObject):
 		gtcDict = {}
 		for glyph in gtc:
 			gtcDict[glyph] = 0
-		for pair in list(self.keys()):
+		for pair in self.keys():
 			left, right = pair
 			if not gtcDict.get(left):
 				gtcDict[left] = 0
@@ -2829,7 +2826,7 @@ class BaseKerning(RBaseObject):
 	def getLeft(self, glyphName):
 		"""Return a list of kerns with glyphName as left character."""
 		hits = []
-		for k, v in list(self.items()):
+		for k, v in self.items():
 			if k[0] == glyphName:
 				hits.append((k, v))
 		return hits
@@ -2837,7 +2834,7 @@ class BaseKerning(RBaseObject):
 	def getRight(self, glyphName):
 		"""Return a list of kerns with glyphName as left character."""
 		hits = []
-		for k, v in list(self.items()):
+		for k, v in self.items():
 			if k[1] == glyphName:
 				hits.append((k, v))
 		return hits
@@ -2848,7 +2845,7 @@ class BaseKerning(RBaseObject):
 		if isinstance(kerningDicts, dict):
 			kerningDicts = [kerningDicts]
 		for kd in kerningDicts:
-			for pair in list(kd.keys()):
+			for pair in kd.keys():
 				exists = pair in self
 				if exists and overwriteExisting:
 					self[pair] = kd[pair]
@@ -2858,7 +2855,7 @@ class BaseKerning(RBaseObject):
 	def swapNames(self, swapTable):
 		"""change glyph names in all kerning pairs based on swapTable.
 		swapTable = {'BeforeName':'AfterName', ...}"""
-		for pair in list(self.keys()):
+		for pair in self.keys():
 			foundInstance = False
 			left, right = pair
 			if left in swapTable:
@@ -2882,7 +2879,7 @@ class BaseKerning(RBaseObject):
 			rightClassDict = {}
 		if analyzeOnly:
 			count = 0
-		for pair in list(self.keys()):
+		for pair in self.keys():
 			left, right = pair
 			value = self[pair]
 			if leftClassDict.get(left) and rightClassDict.get(right):
@@ -2924,9 +2921,9 @@ class BaseKerning(RBaseObject):
 			rightClassDict = {}
 		leftImplode = []
 		rightImplode = []
-		for value in list(leftClassDict.values()):
+		for value in leftClassDict.values():
 			leftImplode = leftImplode + value
-		for value in list(rightClassDict.values()):
+		for value in rightClassDict.values():
 			rightImplode = rightImplode + value
 		analyzed = self.eliminate(leftGlyphsToEliminate=leftImplode, rightGlyphsToEliminate=rightImplode, analyzeOnly=analyzeOnly)
 		if analyzeOnly:
@@ -2949,9 +2946,9 @@ class BaseKerning(RBaseObject):
 		kerning = AFM(path)._kerning
 		if clearExisting:
 			self.clear()
-		for pair in list(kerning.keys()):
-			self[pair] = kerning[pair]	
-				
+		for pair in kerning.keys():
+			self[pair] = kerning[pair]
+
 	def asDict(self, returnIntegers=True):
 		"""return the object as a dictionary"""
 		if not returnIntegers:
@@ -2959,32 +2956,32 @@ class BaseKerning(RBaseObject):
 		else:
 			#duplicate the kerning dict so that we aren't destroying it
 			kerning = {}
-			for pair in list(self.keys()):
+			for pair in self.keys():
 				kerning[pair] = int(round(self[pair]))
 			return kerning
 
 	def __add__(self, other):
 		from sets import Set
 		new = self.__class__()
-		k = Set(list(self.keys())) | Set(list(other.keys()))
+		k = Set(self.keys()) | Set(other.keys())
 		for key in k:
 			new[key] = self.get(key, 0) + other.get(key, 0)
 		return new
-	
+
 	def __sub__(self, other):
 		from sets import Set
 		new = self.__class__()
-		k = Set(list(self.keys())) | Set(list(other.keys()))
+		k = Set(self.keys()) | Set(other.keys())
 		for key in k:
 			new[key] = self.get(key, 0) - other.get(key, 0)
 		return new
 
 	def __mul__(self, factor):
 		new = self.__class__()
-		for name, value in list(self.items()):
+		for name, value in self.items():
 			new[name] = value * factor
 		return new
-	
+
 	__rmul__ = __mul__
 
 	def __div__(self, factor):
@@ -3009,7 +3006,7 @@ class BasePostScriptHintValues(object):
 		if data is not None:
 			self.fromDict(data)
 		else:
-			for name in list(self._attributeNames.keys()):
+			for name in self._attributeNames.keys():
 				setattr(self, name, self._attributeNames[name]['default'])
 		
 	def getParent(self):
@@ -3066,7 +3063,7 @@ class BasePostScriptHintValues(object):
 	
 	def update(self, other):
 		assert isinstance(other, BasePostScriptHintValues)
-		for name in list(self._attributeNames.keys()):
+		for name in self._attributeNames.keys():
 			v = getattr(other, name)
 			if v is not None:
 				setattr(self, name, v)
@@ -3082,7 +3079,7 @@ class BasePostScriptHintValues(object):
 		elif self.getParent() is not None:
 			n.setParent(self.getParent())
 		dont = ['getParent']
-		for k in list(self.__dict__.keys()):
+		for k in self.__dict__.keys():
 			if k in dont:
 				continue
 			dup = copy.deepcopy(self.__dict__[k])
@@ -3103,7 +3100,7 @@ class BasePostScriptGlyphHintValues(BasePostScriptHintValues):
 		if data is not None:
 			self.fromDict(data)
 		else:
-			for name in list(self._attributeNames.keys()):
+			for name in self._attributeNames.keys():
 				setattr(self, name, self._attributeNames[name]['default'])
 
 	def __repr__(self):
@@ -3113,7 +3110,7 @@ class BasePostScriptGlyphHintValues(BasePostScriptHintValues):
 		"""Round the values to reasonable values.
 			- stems are rounded to int
 		"""
-		for name, values in list(self._attributeNames.items()):
+		for name, values in self._attributeNames.items():
 			v = getattr(self, name)
 			if v is None:
 				continue
@@ -3155,7 +3152,7 @@ class BasePostScriptGlyphHintValues(BasePostScriptHintValues):
 	__rdiv__ = __div__
 
 	def _processMathOne(self, copied, other, funct):
-		for name, values in list(self._attributeNames.items()):
+		for name, values in self._attributeNames.items():
 			a = None
 			b = None
 			v = None
@@ -3180,7 +3177,7 @@ class BasePostScriptGlyphHintValues(BasePostScriptHintValues):
 				setattr(copied, name, v)
 
 	def _processMathTwo(self, copied, factor, funct):
-		for name, values in list(self._attributeNames.items()):
+		for name, values in self._attributeNames.items():
 			a = None
 			b = None
 			v = None
@@ -3372,7 +3369,7 @@ class BasePostScriptFontHintValues(BasePostScriptHintValues):
 			- stems are rounded to int
 			- blues are rounded to int
 		"""
-		for name, values in list(self._attributeNames.items()):
+		for name, values in self._attributeNames.items():
 			if name == "blueScale":
 				continue
 			elif name == "forceBold":
@@ -3442,9 +3439,9 @@ def mul(v, f):
 def div(v, f):
 	return v / f
 
-def roundPt(xxx_todo_changeme14):
+def roundPt(pt):
 	"""Round a vector"""
-	(x, y) = xxx_todo_changeme14
+	(x, y) = pt
 	return int(round(x)), int(round(y))
 
 def addPt(ptA, ptB):
@@ -3470,10 +3467,10 @@ def _interpolate(a,b,v):
 	"""interpolate values by factor v"""
 	return a + (b-a) * v
 
-def _interpolatePt(xxx_todo_changeme15, xxx_todo_changeme16,v):
+def _interpolatePt(pta, ptb,v):
 	"""interpolate point by factor v"""
-	(xa, ya) = xxx_todo_changeme15
-	(xb, yb) = xxx_todo_changeme16
+	(xa, ya) = pta
+	(xb, yb) = ptb
 	if not isinstance(v, tuple):
 		xv = v
 		yv = v
@@ -3483,11 +3480,11 @@ def _interpolatePt(xxx_todo_changeme15, xxx_todo_changeme16,v):
 
 # transformations
 
-def _scalePointFromCenter(xxx_todo_changeme17, xxx_todo_changeme18, xxx_todo_changeme19):
+def _scalePointFromCenter(pt, scale, center):
 	"""scale a point from a center point"""
-	(pointX, pointY) = xxx_todo_changeme17
-	(scaleX, scaleY) = xxx_todo_changeme18
-	(centerX, centerY) = xxx_todo_changeme19
+	(pointX, pointY) = pt
+	(scaleX, scaleY) = scale
+	(centerX, centerY) = center
 	ogCenter = (centerX, centerY)
 	scaledCenter = (centerX * scaleX, centerY * scaleY)
 	shiftVal = (scaledCenter[0] - ogCenter[0], scaledCenter[1] - ogCenter[1])

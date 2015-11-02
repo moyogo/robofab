@@ -12,18 +12,18 @@ class QuartzPen(BasePen):
 		BasePen.__init__(self, glyphSet)
 		self._context = quartzContext
 
-	def _moveTo(self, xxx_todo_changeme):
-		(x, y) = xxx_todo_changeme
+	def _moveTo(self, pt):
+		(x, y) = pt
 		self._context.CGContextMoveToPoint(x, y)
 
-	def _lineTo(self, xxx_todo_changeme1):
-		(x, y) = xxx_todo_changeme1
+	def _lineTo(self, pt):
+		(x, y) = pt
 		self._context.CGContextAddLineToPoint(x, y)
 
-	def _curveToOne(self, xxx_todo_changeme2, xxx_todo_changeme3, xxx_todo_changeme4):
-		(x1, y1) = xxx_todo_changeme2
-		(x2, y2) = xxx_todo_changeme3
-		(x3, y3) = xxx_todo_changeme4
+	def _curveToOne(self, pt1, pt2, pt3):
+		(x1, y1) = pt1
+		(x2, y2) = pt2
+		(x3, y3) = pt3
 		self._context.CGContextAddCurveToPoint(x1, y1, x2, y2, x3, y3)
 
 	def _closePath(self):

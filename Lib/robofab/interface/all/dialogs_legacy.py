@@ -404,9 +404,9 @@ def SelectGlyph(font, message="Select a glyph:", title='RoboFab'):
 	from fontTools.misc.textTools import caselessSort
 
 	if inFontLab:
-		tl = list(font.keys())
-		list = caselessSort(tl)
-		glyphname = OneList(list, message, title)
+		tl = font.keys()
+		lst = caselessSort(tl)
+		glyphname = OneList(lst, message, title)
 		if glyphname is None:
 			return None
 		else:

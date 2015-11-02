@@ -191,8 +191,7 @@ def splitAccent(accentglyph):
 		counter={}
 		for accent in accentList:
 			counter[ogbase.find(accent)] = accent
-		counterList = list(counter.keys())
-		counterList.sort()
+		counterList = sorted(counter.keys())
 		finalAccents = []
 		for i in counterList:
 			finalAccents.append(counter[i])
@@ -231,19 +230,19 @@ class _InternalCaseFunctions:
 	"""internal functions for doing gymnastics with the casedicts"""
 	
 	def expandsmallcapscasedict(self):
-		for i in list(casedict.values()):
-			if i not in list(smallcapscasedict.keys()):
+		for i in casedict.values():
+			if i not in smallcapscasedict.keys():
 				if len(i) > 1:
 					if i[:1].upper() == i[:1]:
 						smallcapscasedict[i] = i[:1] + i[1:] + '.sc'	
 							
 		for i in uppercase:
 			if i + '.sc' in smallcaps:
-				if i not in list(smallcapscasedict.keys()):
+				if i not in smallcapscasedict.keys():
 					smallcapscasedict[i] = i + '.sc'
 					
 	def flipcasedict(self):
-		for i in list(casedict.keys()):
+		for i in casedict.keys():
 			if i.find('dotless') != -1:
 				i = i.replace('dotless', '')
 			casedictflip[casedict[i]] = i
@@ -252,7 +251,7 @@ class _InternalCaseFunctions:
 		for i in lowercase_ligatures:
 			casedict[i] = i.upper()
 		for i in lowercase:
-			if i not in list(casedict.keys()):
+			if i not in casedict.keys():
 				if string.capitalize(i) in uppercase:
 					casedict[i] = string.capitalize(i)
 
@@ -274,7 +273,7 @@ def upper(glyphstring):
 		if bS is not None:
 			suffix = bS[1]
 			i = bS[0]
-		if i in list(casedict.keys()):
+		if i in casedict.keys():
 			i = casedict[i]
 		if len(suffix) != 0:
 			i = '.'.join([i, suffix])
@@ -299,7 +298,7 @@ def lower(glyphstring):
 		if breakSuffix(i) is not None:
 			suffix = bS[1]
 			i = bS[0]
-		if i in list(casedictflip.keys()):
+		if i in casedictflip.keys():
 			i = casedictflip[i]
 		if len(suffix) != 0:
 			i = '.'.join([i, suffix])	
@@ -321,9 +320,9 @@ def small(glyphstring):
 				suffix = ''
 			i = bS[0]
 		if i in lowercase:
-			if i not in list(smallcapscasedict.keys()):
+			if i not in smallcapscasedict.keys():
 				i = casedict[i]
-		if i in list(smallcapscasedict.keys()):
+		if i in smallcapscasedict.keys():
 			i = smallcapscasedict[i]
 		if i != 'S.sc/S.sc':
 			if len(suffix) != 0:
@@ -352,7 +351,7 @@ def controls(glyphname):
 	"""Send this a glyph name and get a control string
 	with all glyphs separated by slashes."""
 	controlslist =	[]
-	for value in list(controldict.values()):
+	for value in controldict.values():
 		for v in value:
 			for i in v.split('/'):
 				if len(i) > 0:
@@ -360,7 +359,7 @@ def controls(glyphname):
 						controlslist.append(i)	
 	cs = ''
 	if glyphname in controlslist:
-		for key in list(controldict.keys()):
+		for key in controldict.keys():
 			for v in controldict[key]:
 				if glyphname in v.split('/'):
 					con = controldict[key]
@@ -403,11 +402,11 @@ def controls(glyphname):
 	return cs
 
 
-def sortControlList(list):
+def sortControlList(lst):
 	"""Roughly sort a list of control strings."""
-		
+
 	controls = []
-	for v in list(controldict.values()):
+	for v in controldict.values():
 		for w in v:
 			for x in w.split('/'):
 				if len(x) is not None:
@@ -421,7 +420,7 @@ def sortControlList(list):
 	ss_digits = [] 
 	ss_currency = [] 
 	ss_other = []
-	for i in list:
+	for i in lst:
 		glyphs = i.split('/')
 		c = glyphs[2]
 		for glyph in glyphs:

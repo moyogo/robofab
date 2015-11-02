@@ -83,7 +83,7 @@ def String2Glyph(gString, penClass, font):
 		return None
 	info = pickle.loads(gString)
 	name = info['name']
-	if not name in list(font.keys()):
+	if not name in font.keys():
 		glyph = font.newGlyph(name)
 	else:
 		glyph = font[name]
@@ -94,8 +94,8 @@ def String2Glyph(gString, penClass, font):
 		elif p == "endPath":
 			pen.endPath()
 		else:
-			pt, type = p
-			pen.addPoint(pt, type)
+			pt, typ = p
+			pen.addPoint(pt, typ)
 	glyph.width = info['width']
 	glyph.update()
 	return glyph

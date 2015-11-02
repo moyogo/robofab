@@ -10,17 +10,17 @@ class RInfoRFTestCase(unittest.TestCase):
 
 	def testRoundTripVersion2(self):
 		infoObject = RInfo()
-		for attr, value in list(fontInfoVersion2.items()):
+		for attr, value in fontInfoVersion2.items():
 			setattr(infoObject, attr, value)
 			newValue = getattr(infoObject, attr)
 			self.assertEqual((attr, newValue), (attr, value))
 
 	def testRoundTripVersion1(self):
 		infoObject = RInfo()
-		for attr, value in list(fontInfoVersion1.items()):
+		for attr, value in fontInfoVersion1.items():
 			if attr not in ufoLib.deprecatedFontInfoAttributesVersion2:
 				setattr(infoObject, attr, value)
-		for attr, expectedValue in list(fontInfoVersion1.items()):
+		for attr, expectedValue in fontInfoVersion1.items():
 			if attr not in ufoLib.deprecatedFontInfoAttributesVersion2:
 				value = getattr(infoObject, attr)
 				self.assertEqual((attr, expectedValue), (attr, value))
@@ -37,7 +37,7 @@ class RInfoRFTestCase(unittest.TestCase):
 		infoObject = RInfo()
 		requiredWarnings = []
 		try:
-			for attr, value in list(fontInfoVersion1.items()):
+			for attr, value in fontInfoVersion1.items():
 				if attr in ufoLib.deprecatedFontInfoAttributesVersion2:
 					setattr(infoObject, attr, value)
 					v = getattr(infoObject, attr)

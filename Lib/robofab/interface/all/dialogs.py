@@ -226,15 +226,14 @@ def test():
     print("\tplatformVersion:", platformVersion)
     print("\tlooking for module:", platformApplicationModuleName)
     print("\t\tdid we find it?", foundPlatformModule)
-    
+
     print()
     print("Available dialogs and source:")
     for name in __all__:
-        if name in list(globals().keys()):
+        if name in globals().keys():
             print("\t", name, "\t", globals()[name].__module__)
         else:
             print("\t", name, "\t not loaded.")
 
 if __name__ == "__main__":
     test()
-

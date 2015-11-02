@@ -22,8 +22,7 @@ def importAllGlifFiles(font, dirName=None, doProgress=True, bar=None):
 		else:
 			dirName = GetFolder("Please select a folder with .glif files")
 	glyphSet = GlyphSet(dirName)
-	glyphNames = list(glyphSet.keys())
-	glyphNames.sort()
+	glyphNames = sorted(glyphSet.keys())
 	barStart = 0
 	closeBar = False
 	if doProgress:

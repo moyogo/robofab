@@ -186,8 +186,7 @@ class RFont(BaseFont):
 			if splitFeatures is not None:
 				order = fontLib.get("org.robofab.opentype.featureorder")
 				if order is None:
-					order = list(splitFeatures.keys())
-					order.sort()
+					order = sorted(splitFeatures.keys())
 				else:
 					del fontLib["org.robofab.opentype.featureorder"]
 				del fontLib["org.robofab.opentype.features"]
@@ -250,16 +249,16 @@ class RFont(BaseFont):
 	def keys(self):
 		# the keys are the superset of self._objects.keys() and
 		# self._glyphSet.keys(), minus self._scheduledForDeletion
-		keys = list(self._object.keys())
+		keys = self._object.keys()
 		if self._glyphSet is not None:
-			keys.extend(list(self._glyphSet.keys()))
+			keys.extend(self._glyphSet.keys())
 		d = dict()
 		for glyphName in keys:
 			d[glyphName] = None
 		for glyphName in self._scheduledForDeletion:
 			if glyphName in d:
 				del d[glyphName]
-		return list(d.keys())
+		return d.keys()
 
 	def has_key(self, glyphName):
 		# XXX ditto, see above.
@@ -318,7 +317,7 @@ class RFont(BaseFont):
 			previousMap = self.lib[libKey]
 		basicMap = {}
 		reverseMap = {}
-		for glyphName in list(self.keys()):
+		for glyphName in self.keys():
 			componentsToMap = None
 			modTime = None
 			# get the previous bits of data
@@ -395,7 +394,7 @@ class RFont(BaseFont):
 		bar = None
 		if doProgress:
 			from robofab.interface.all.dialogs import ProgressBar
-			bar = ProgressBar("Exporting UFO", nonGlyphCount + len(list(self._object.keys())))
+			bar = ProgressBar("Exporting UFO", nonGlyphCount + len(self._object.keys()))
 		# write
 		writer = UFOWriter(destDir, formatVersion=formatVersion)
 		try:
@@ -464,9 +463,9 @@ class RFont(BaseFont):
 				bar.label("Saving glyphs...")
 			count = nonGlyphCount
 			if saveAs:
-				glyphNames = list(self.keys())
+				glyphNames = self.keys()
 			else:
-				glyphNames = list(self._object.keys())
+				glyphNames = self._object.keys()
 			for glyphName in glyphNames:
 				glyph = self[glyphName]
 				glyph.psHints._saveToLib(glyph.lib)
@@ -1106,10 +1105,10 @@ class RAnchor(BaseAnchor):
 		self._hasChanged()
 	
 	position = property(_get_position, _set_position, doc="position of the anchor")
-	
-	def move(self, xxx_todo_changeme):
+
+	def move(self, values):
 		"""Move the anchor"""
-		(x, y) = xxx_todo_changeme
+		(x, y) = values
 		self.x = self.x + x
 		self.y = self.y + y
 		self._hasChanged()
@@ -1153,17 +1152,17 @@ class RComponent(BaseComponent):
 
 	def _get_scale(self):
 		return self._scale
-	
-	def _set_scale(self, xxx_todo_changeme1):
-		(x, y) = xxx_todo_changeme1
+
+	def _set_scale(self, scale):
+		(x, y) = scale
 		self._scale = (x, y)
 		self._hasChanged()
 		
 	scale = property(_get_scale, _set_scale, doc="the scale of the component")
-		
-	def move(self, xxx_todo_changeme2):
+
+	def move(self, values):
 		"""Move the component"""
-		(x, y) = xxx_todo_changeme2
+		(x, y) = values
 		self.offset = (self.offset[0] + x, self.offset[1] + y)
 	
 	def decompose(self):

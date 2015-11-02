@@ -44,8 +44,11 @@ if os.name == "mac":
 	LOCAL_ENCODING = "macroman"
 else:
 	LOCAL_ENCODING = "latin-1"
-	
-	
+
+try:
+	basestring
+except NameError:
+	basestring = str
 #
 #
 #
@@ -207,7 +210,7 @@ def NewGlyph(font, glyphName, clear=False, updateFont=True):
 	the (very slow) fl.UpdateFont function will be called.
 	"""
 	font = unwrapFont(font)
-	if isinstance(glyphName, str):
+	if isinstance(glyphName, basestring):
 		glyphName = glyphName.encode(LOCAL_ENCODING)
 	glyph = font[glyphName]
 	if glyph is None:
@@ -246,13 +249,12 @@ def AddToAlias(additions, sep='+'):
 		if len(i) == 0: continue
 		if i[0] != '%':
 			glyphs[i.split(' ')[0]] = i.split(' ')[1]
-	for glyphName, glyphConstruction in list(additions.items()):
-		if glyphName not in list(glyphs.keys()):
+	for glyphName, glyphConstruction in additions.items():
+		if glyphName not in glyphs.keys():
 			new.append(glyphName)
 			glyphs[glyphName] = string.join(glyphConstruction, sep)
 	newNames = ['%%FONTLAB ALIASES']
-	l = list(glyphs.keys())
-	l.sort()
+	l = sorted(glyphs.keys())
 	for i in l:
 		newNames.append(string.join([i, glyphs[i]], ' '))
 		file = open(path, 'w')

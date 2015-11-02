@@ -40,24 +40,24 @@ def stripSuffix(glyphName):
 		return baseName
 	else:
 		return glyphName
-		
-def buildRelatedAccentList(font, list):
+
+def buildRelatedAccentList(font, lst):
 	"""build a list of related glyphs suitable for use with AccentTools"""
 	searchList = []
 	baseGlyphs = {}
 	foundList = []
-	for glyphName in list:
+	for glyphName in lst:
 		splitNames = splitAccent(glyphName)
 		baseName = splitNames[0]
 		accentNames = splitNames[1]
 		if baseName not in searchList:
 			searchList.append(baseName)
-		if baseName not in list(baseGlyphs.keys()):
+		if baseName not in baseGlyphs.keys():
 			baseGlyphs[baseName] = [accentNames]
 		else:
 			baseGlyphs[baseName].append(accentNames)
 	foundGlyphs = findRelatedGlyphs(font, searchList, doAccents=0)
-	for baseGlyph in list(foundGlyphs.keys()):
+	for baseGlyph in foundGlyphs.keys():
 		for foundGlyph in foundGlyphs[baseGlyph]:
 			for accentNames in baseGlyphs[baseGlyph]:
 				foundList.append(makeAccentName(foundGlyph, accentNames))
@@ -70,18 +70,18 @@ def findRelatedGlyphs(font, searchItem, doAccents=True):
 	is False it will skip accented glyph names.
 	This is a relatively slow operation!"""
 	relatedGlyphs = {}
-	for name in list(font.keys()):
+	for name in font.keys():
 		base = name.split('.')[0]
-		if name not in list(relatedGlyphs.keys()):
+		if name not in relatedGlyphs.keys():
 			relatedGlyphs[name] = []
-		if base not in list(relatedGlyphs.keys()):
+		if base not in relatedGlyphs.keys():
 			relatedGlyphs[base] = []
 		if doAccents:
 			accentBase = findAccentBase(name)
-			if accentBase not in list(relatedGlyphs.keys()):
+			if accentBase not in relatedGlyphs.keys():
 				relatedGlyphs[accentBase] = []
 			baseAccentBase = findAccentBase(base)
-			if baseAccentBase not in list(relatedGlyphs.keys()):
+			if baseAccentBase not in relatedGlyphs.keys():
 				relatedGlyphs[baseAccentBase] = []
 		if base != name and name not in relatedGlyphs[base]:
 			relatedGlyphs[base].append(name)
@@ -127,7 +127,7 @@ def nameBuster(glyphName, glyphConstruct):
 			suffix = glyphName.split('.')[1]
 		if glyphName.find('.sc') != -1:
 			suffix = glyphName.split('.sc')[1]
-		if stripedSuffixName not in list(glyphConstruct.keys()):
+		if stripedSuffixName not in glyphConstruct.keys():
 			errors.append('%s: %s not in glyph construction database'%(glyphName, stripedSuffixName))
 		else:
 			if suffix is None:
@@ -220,7 +220,7 @@ class AccentTools:
 							xOffset = ucXOffset-accentOffset
 							yOffset = ucYOffset-accentOffset
 						# should I add a cedilla and ogonek yoffset override here?
-						if accentPosition not in list(previousPositions.keys()):
+						if accentPosition not in previousPositions.keys():
 							self._dropAnchor(self.font[baseName], accentPosition, xOffset, yOffset)
 							if markGlyph:
 								self.font[baseName].mark = anchorColor

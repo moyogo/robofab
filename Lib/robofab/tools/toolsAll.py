@@ -11,6 +11,10 @@ if sys.platform == "darwin" and sys.version_info[:3] == (2, 2, 0):
 else:
 	have_broken_macsupport = 0
 
+try:
+	unicode
+except NameError:
+	unicode = str
 
 def readGlyphConstructions():
 	"""read GlyphConstruction and turn it into a dict"""
@@ -82,7 +86,7 @@ def extractTTFFontInfo(font):
 		entry = font["name"].getName(index, 3, 1)
 		if entry is not None:
 			try:
-				setattr(info, name, str(entry.string, "utf16"))
+				setattr(info, name, unicode(entry.string, "utf16"))
 			except:
 				print("Error importing value %s: %s"%(str(name), str(info)))
 	return info
@@ -122,7 +126,7 @@ def fontToUFO(src, dst, fileType=None):
 		assert 0, "unknown file type: %r" % fileType
 	inGlyphSet = font.getGlyphSet()
 	outGlyphSet = ufoWriter.getGlyphSet()
-	for glyphName in list(inGlyphSet.keys()):
+	for glyphName in inGlyphSet.keys():
 		print("-", glyphName)
 		glyph = inGlyphSet[glyphName]
 		def drawPoints(pen):

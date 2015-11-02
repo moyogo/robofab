@@ -145,8 +145,7 @@ def AskYesNoCancel(message, title='RoboFab', default=0, informativeText=""):
     return vanilla.dialogs.askYesNoCancel(messageText=message, informativeText=informativeText)
 
 def FindGlyph(aFont, message="Search for a glyph:", title='RoboFab'):
-    items = list(aFont.keys())
-    items.sort()
+    items = sorted(aFont.keys())
     w = _listController(items, message, title, showSearch=True)
     glyphName = w.get()
     if glyphName is not None:
@@ -203,16 +202,14 @@ def SelectFont(message="Select a font:", title='RoboFab', allFonts=None):
     data = dict()
     for font in fonts:
         data["%s" %font] = font
-    
-    items = list(data.keys())
-    items.sort()
+
+    items = sorted(data.keys())
     w = _listController(items, message, title, showSearch=False)
     value = w.get()
     return data.get(value, None)
 
 def SelectGlyph(aFont, message="Select a glyph:", title='RoboFab'):
-    items = list(aFont.keys())
-    items.sort()
+    items = sorted(aFont.keys())
     w = _listController(items, message, title, showSearch=False)
     glyphName = w.get()
     if glyphName is not None:

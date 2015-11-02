@@ -127,7 +127,7 @@ class MarginPen(BasePen):
 	def getMargins(self):
 		"""Return the extremes of the slice for all contours combined, i.e. the whole glyph."""
 		allHits = []
-		for index, pts in list(self.hits.items()):
+		for index, pts in self.hits.items():
 			allHits.extend(pts)
 		if allHits:
 			return min(allHits), max(allHits)
@@ -136,20 +136,17 @@ class MarginPen(BasePen):
 	def getContourMargins(self):
 		"""Return the extremes of the slice for each contour."""
 		allHits = {}
-		for index, pts in list(self.hits.items()):
-			unique = list(Set(pts))
-			unique.sort()
+		for index, pts in self.hits.items():
+			unique = sorted(Set(pts))
 			allHits[index] = unique
 		return allHits
 		
 	def getAll(self):
 		"""Return all the slices."""
 		allHits = []
-		for index, pts in list(self.hits.items()):
+		for index, pts in self.hits.items():
 			allHits.extend(pts)
-		unique = list(Set(allHits))
-		unique = list(unique)
-		unique.sort()
+		unique = sorted(Set(allHits))
 		return unique
 		
 		

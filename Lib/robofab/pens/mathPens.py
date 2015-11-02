@@ -4,6 +4,10 @@
 from ufoLib.pointPen import AbstractPointPen
 from robofab.pens.pointPen import BasePointToSegmentPen
 
+try:
+	xrange
+except:
+	xrange = range
 
 class GetMathDataPointPen(AbstractPointPen):
 	
@@ -125,7 +129,7 @@ class CurveSegmentFilterPointPen(AbstractPointPen):
 					# gather preceding off curves
 					testOffCurves = []
 					lastPoint = None
-					for i in range(len(points)):
+					for i in xrange(len(points)):
 						i = -i - 1
 						testPoint = points[i]
 						testSegmentType = testPoint[1]

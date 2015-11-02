@@ -98,7 +98,7 @@ def _estimateCubicCurveLength(pt0, pt1, pt2, pt3, precision=10):
 	points = []
 	length = 0
 	step = 1.0/precision
-	factors = list(range(0, precision+1))
+	factors = range(0, precision+1)
 	for i in factors:
 		points.append(_getCubicPoint(i*step, pt0, pt1, pt2, pt3))
 	for i in range(len(points)-1):
@@ -107,10 +107,10 @@ def _estimateCubicCurveLength(pt0, pt1, pt2, pt3, precision=10):
 		length += distance(pta, ptb)
 	return length
 
-def _mid(xxx_todo_changeme, xxx_todo_changeme1):
+def _mid(pt1, pt2):
 	"""(Point, Point) -> Point\nReturn the point that lies in between the two input points."""
-	(x0, y0) = xxx_todo_changeme
-	(x1, y1) = xxx_todo_changeme1
+	(x0, y0) = pt1
+	(x1, y1) = pt2
 	return 0.5 * (x0 + x1), 0.5 * (y0 + y1)
 
 def _getCubicPoint(t, pt0, pt1, pt2, pt3):
@@ -178,7 +178,7 @@ class FlattenPen(BasePen):
 			self.currentPt = pt
 			return
 		step = 1.0/maxSteps
-		factors = list(range(0, maxSteps+1))
+		factors = range(0, maxSteps+1)
 		for i in factors[1:]:
 			self.otherPen.lineTo(_interpolatePt(self.currentPt, pt, i*step))
 		self.currentPt = pt
@@ -192,7 +192,7 @@ class FlattenPen(BasePen):
 			self.currentPt = pt3
 			return
 		step = 1.0/maxSteps
-		factors = list(range(0, maxSteps+1))
+		factors = range(0, maxSteps+1)
 		for i in factors[1:]:
 			pt = _getCubicPoint(i*step, self.currentPt, pt1, pt2, pt3)
 			self.otherPen.lineTo(pt)

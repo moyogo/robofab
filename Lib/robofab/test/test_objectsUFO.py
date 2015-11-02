@@ -114,17 +114,14 @@ class SaveTestCase(ContourMethodsTestCase):
 	def testSaveAs(self):
 		path = tempfile.mktemp(".ufo")
 		try:
-			keys1 = list(self.font.keys())
+			keys1 = self.font.keys()
 			self.font.save(path)
-			keys2 = list(self.font.keys())
-			keys1.sort()
-			keys2.sort()
-			self.assertEqual(keys1, keys2)
+			keys2 = self.font.keys()
+			self.assertEqual(sorted(keys1), sorted(keys2))
 			self.assertEqual(self.font.path, path)
 			font2 = RFont(path)
-			keys3 = list(font2.keys())
-			keys3.sort()
-			self.assertEqual(keys1, keys3)
+			keys3 = font2.keys()
+			self.assertEqual(sorted(keys1), sorted(keys3))
 		finally:
 			if os.path.exists(path):
 				shutil.rmtree(path)
@@ -136,18 +133,15 @@ class SaveTestCase(ContourMethodsTestCase):
 #		self.assertEqual(self.font["X"].name, "X")
 		# remove a glyph
 		self.font.removeGlyph("a")
-		keys1 = list(self.font.keys())
+		keys1 = self.font.keys()
 		try:
 			self.font.save(path)
 			self.assertEqual(self.font.path, path)
-			keys2 = list(self.font.keys())
-			keys1.sort()
-			keys2.sort()
-			self.assertEqual(keys1, keys2)
+			keys2 = self.font.keys()
+			self.assertEqual(sorted(keys1), sorted(keys2))
 			font2 = RFont(path)
-			keys3 = list(font2.keys())
-			keys3.sort()
-			self.assertEqual(keys1, keys3)
+			keys3 = font2.keys()
+			self.assertEqual(sorted(keys1), sorted(keys3))
 		finally:
 			if os.path.exists(path):
 				shutil.rmtree(path)
