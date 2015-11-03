@@ -748,7 +748,7 @@ class RLayer(BaseLayer):
 	# dict behavior
 
 	def keys(self):
-		return list(self._object.keys())
+		return self._object.keys()
 
 	def __contains__(self, glyphName):
 		return glyphName in self._object
@@ -1523,8 +1523,8 @@ class RComponent(BaseComponent):
 		xScale, xyScale, yxScale, yScale, xOffset, yOffset = self._object.transformation
 		return xOffset, yOffset
 
-	def _set_offset(self, xxx_todo_changeme):
-		(x, y) = xxx_todo_changeme
+	def _set_offset(self, offset):
+		(x, y) = offset
 		xScale, xyScale, yxScale, yScale, xOffset, yOffset = self._object.transformation
 		self._object.transformation = (xScale, xyScale, yxScale, yScale, x, y)
 
@@ -1534,16 +1534,16 @@ class RComponent(BaseComponent):
 		xScale, xyScale, yxScale, yScale, xOffset, yOffset = self._object.transformation
 		return xScale, yScale
 
-	def _set_scale(self, xxx_todo_changeme1):
-		(x, y) = xxx_todo_changeme1
+	def _set_scale(self, scale):
+		(x, y) = scale
 		xScale, xyScale, yxScale, yScale, xOffset, yOffset = self._object.transformation
 		self._object.transformation = (x, xyScale, yxScale, y, xOffset, yOffset)
 
 	scale = property(_get_scale, _set_scale, doc="the scale of the component")
 
-	def move(self, xxx_todo_changeme2):
+	def move(self, values):
 		"""Move the component"""
-		(x, y) = xxx_todo_changeme2
+		(x, y) = values
 		self._object.move((x, y))
 
 	def decompose(self):
@@ -1601,20 +1601,20 @@ class _RDict(RBaseObject):
 		del self._object[key]
 
 	def __iter__(self):
-		for key in list(self.keys()):
+		for key in self.keys():
 			yield key
 
 	def clear(self):
 		self._object.clear()
 
 	def keys(self):
-		return list(self._object.keys())
+		return self._object.keys()
 
 	def values(self):
-		return list(self._object.values())
+		return self._object.values()
 
 	def items(self):
-		return list(self._object.items())
+		return self._object.items()
 
 	def pop(self, key, default=None):
 		return self._object.pop(key, default)

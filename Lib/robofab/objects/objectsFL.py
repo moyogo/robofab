@@ -315,7 +315,7 @@ _flToRFSegmentDict = {	flMOVE		:	MOVE,
 			}
 
 _rfToFLSegmentDict = {}
-for k, v in list(_flToRFSegmentDict.items()):
+for k, v in _flToRFSegmentDict.items():
 	_rfToFLSegmentDict[v] = k
 		
 def _flToRFSegmentType(segmentType):
@@ -323,12 +323,12 @@ def _flToRFSegmentType(segmentType):
 
 def _rfToFLSegmentType(segmentType):
 	return _rfToFLSegmentDict[segmentType]
-		
-def _scalePointFromCenter(xxx_todo_changeme6, xxx_todo_changeme7, xxx_todo_changeme8):
-	(pointX, pointY) = xxx_todo_changeme6
-	(scaleX, scaleY) = xxx_todo_changeme7
-	(centerX, centerY) = xxx_todo_changeme8
-	ogCenter = (centerX, centerY)
+
+def _scalePointFromCenter(pt, scale, center):
+	(pointX, pointY) = pt
+	(scaleX, scaleY) = scale
+	(centerX, centerY) = center
+	ogCenter = center
 	scaledCenter = (centerX * scaleX, centerY * scaleY)
 	shiftVal = (scaledCenter[0] - ogCenter[0], scaledCenter[1] - ogCenter[1])
 	scaledPointX = (pointX * scaleX) - shiftVal[0]
@@ -489,7 +489,7 @@ class RFont(BaseFont):
 				glyphName = newGlyphName
 				glyph.name = glyphName
 			keys[glyphName] = None
-		return list(keys.keys())
+		return keys.keys()
 
 	def has_key(self, glyphName):
 		glyph = self._object[glyphName]
@@ -786,7 +786,7 @@ class RFont(BaseFont):
 	def setOTClasses(self, dict):
 		"""Set all OpenType classes."""
 		l = []
-		for i in list(dict.keys()):
+		for i in dict.keys():
 			l.append(''.join([i, ' = [', ' '.join(dict[i]), '];']))
 		self._object.ot_classes = '\n'.join(l)
 		
@@ -816,14 +816,14 @@ class RFont(BaseFont):
 	def setOTFeatures(self, dict):
 		"""Set all OpenType features in the font."""
 		features= {}
-		for i in list(dict.keys()):
+		for i in dict.keys():
 			f = []
 			f.append('feature %s {'%i)
 			f.append(dict[i])
 			f.append('} %s;'%i)
 			features[i] = '\n'.join(f)
 		self._object.features.clean()
-		for i in list(features.keys()):
+		for i in features.keys():
 			self._object.features.append(Feature(i, features[i]))
 			
 	def getOTFeature(self, name):
@@ -1186,14 +1186,12 @@ class RFont(BaseFont):
 				if glyphName in glyphSet:
 					glyphNames.append(glyphName)
 					done[glyphName] = 1
-			allGlyphNames = list(glyphSet.keys())
-			allGlyphNames.sort()
+			allGlyphNames = sorted(glyphSet.keys())
 			for glyphName in allGlyphNames:
 				if glyphName not in done:
 					glyphNames.append(glyphName)
 		else:
-			glyphNames = list(glyphSet.keys())
-			glyphNames.sort()
+			glyphNames = sorted(glyphSet.keys())
 		return glyphNames
 	
 	def _readOpenTypeFeaturesFromLib(self, fontLib, setFeatures=True):
@@ -1209,8 +1207,7 @@ class RFont(BaseFont):
 			order = fontLib.get("org.robofab.opentype.featureorder")
 			if order is None:
 				# for UFOs saved without the feature order, do the same as before.
-				order = list(features.keys())
-				order.sort()
+				order = sorted(features.keys())
 			else:
 				del fontLib["org.robofab.opentype.featureorder"]
 			del fontLib["org.robofab.opentype.features"]
@@ -1583,10 +1580,10 @@ class RGlyph(BaseGlyph):
 	def autoHint(self):
 		"""Automatically generate type 1 hints."""
 		self._object.Autohint()
-		
-	def move(self, xxx_todo_changeme, contours=True, components=True, anchors=True):
+
+	def move(self, values, contours=True, components=True, anchors=True):
 		"""Move a glyph's items that are flagged as True"""
-		(x, y) = xxx_todo_changeme
+		(x, y) = values
 		x, y = roundPt((x, y))
 		self._object.Shift(Point(x, y))
 		for c in self.getComponents():
@@ -2019,8 +2016,8 @@ class RSegment(BaseSegment):
 	
 	selected = property(_get_selected, _set_selected, doc="")
 
-	def move(self, xxx_todo_changeme1):
-		(x, y) = xxx_todo_changeme1
+	def move(self, values):
+		(x, y) = values
 		x, y = roundPt((x, y))
 		self._node.Shift(Point(x, y))
 		if self._isQCurve():
@@ -2123,13 +2120,13 @@ class RPoint(BasePoint):
 		
 	selected = property(_get_selected, _set_selected, doc="")
 
-	def move(self, xxx_todo_changeme2):
-		(x, y) = xxx_todo_changeme2
+	def move(self, values):
+		(x, y) = values
 		x, y = roundPt((x, y))
 		self._point.Shift(Point(x, y))
-	
-	def scale(self, xxx_todo_changeme3, center=(0, 0)):
-		(x, y) = xxx_todo_changeme3
+
+	def scale(self, scale, center=(0, 0)):
+		(x, y) = scale
 		centerX, centerY = roundPt(center)
 		point = self._point
 		point.x, point.y = _scalePointFromCenter((point.x, point.y), (x, y), (centerX, centerY))
@@ -2208,16 +2205,16 @@ class RComponent(BaseComponent):
 
 	def _get_scale(self):
 		return (self._object.scale.x, self._object.scale.y)
-	
-	def _set_scale(self, xxx_todo_changeme4):
-		(x, y) = xxx_todo_changeme4
+
+	def _set_scale(self, scale):
+		(x, y) = scale
 		self._object.scale=Point(x, y)
 		
 	scale = property(_get_scale, _set_scale, doc="the scale of the component")
 
-	def move(self, xxx_todo_changeme5):
+	def move(self, values):
 		"""Move the component"""
-		(x, y) = xxx_todo_changeme5
+		(x, y) = values
 		x, y = roundPt((x, y))
 		self._object.delta=Point(self._object.delta.x+x, self._object.delta.y+y)
 	
@@ -2369,7 +2366,7 @@ class RGroups(BaseGroups):
 		# set the group data into the font.
 		if self.getParent() is not None:
 			groups = []
-			for i in list(self.keys()):
+			for i in self.keys():
 				value = ' '.join(self[i])
 				groups.append(': '.join([i, value]))
 			groups.sort()
@@ -2489,7 +2486,7 @@ class RKerning(BaseKerning):
 		# override base class here for speed
 		parentFont = self.getParent().naked()
 		# add existing data to the new kerning dict is not being replaced
-		for pair in list(self.keys()):
+		for pair in self.keys():
 			if pair not in kerningDict:
 				kerningDict[pair] = self._kerning[pair]
 		# now clear the existing kerning to make sure that
@@ -2499,15 +2496,15 @@ class RKerning(BaseKerning):
 		kDict = {}
 		# nest the pairs into a dict keyed by the left glyph
 		# {'A':{'A':-10, 'B':20, ...}, 'B':{...}, ...}
-		for left, right in list(kerningDict.keys()):
+		for left, right in kerningDict.keys():
 			value = kerningDict[left, right]
 			if not left in kDict:
 				kDict[left] = {}
 			kDict[left][right] = value
-		for left in list(kDict.keys()):
+		for left in kDict.keys():
 			leftGlyph = parentFont[left]
 			if leftGlyph is not None:
-				for right in list(kDict[left].keys()):
+				for right in kDict[left].keys():
 					value = kDict[left][right]
 					if value != 0:
 						rightIndex = parentFont.FindGlyph(right)
@@ -2528,7 +2525,7 @@ class RKerning(BaseKerning):
 		from sets import Set
 		from robofab.objects.objectsRF import RKerning as _RKerning
 		new = _RKerning()
-		k = Set(list(self.keys())) | Set(list(other.keys()))
+		k = Set(self.keys()) | Set(other.keys())
 		for key in k:
 			new[key] = self.get(key, 0) + other.get(key, 0)
 		return new
@@ -2539,7 +2536,7 @@ class RKerning(BaseKerning):
 		from sets import Set
 		from robofab.objects.objectsRF import RKerning as _RKerning
 		new = _RKerning()
-		k = Set(list(self.keys())) | Set(list(other.keys()))
+		k = Set(self.keys()) | Set(other.keys())
 		for key in k:
 			new[key] = self.get(key, 0) - other.get(key, 0)
 		return new
@@ -2549,7 +2546,7 @@ class RKerning(BaseKerning):
 		as they need to be orphaned objects and FL can't deal with that."""
 		from robofab.objects.objectsRF import RKerning as _RKerning
 		new = _RKerning()
-		for name, value in list(self.items()):
+		for name, value in self.items():
 			new[name] = value * factor
 		return new
 	
@@ -2643,7 +2640,7 @@ def _infoMapDict(**kwargs):
 
 def _flipDict(d):
 	f = {}
-	for k, v in list(d.items()):
+	for k, v in d.items():
 		f[v] = k
 	return f
 
@@ -3002,7 +2999,7 @@ class RInfo(BaseInfo):
 	def _get_openTypeOS2Type(self):
 		value = self._object.ttinfo.os2_fs_type
 		intList = []
-		for bit, bitNumber in list(_openTypeOS2Type_fromFL.items()):
+		for bit, bitNumber in _openTypeOS2Type_fromFL.items():
 			if value & bit:
 				intList.append(bitNumber)
 		return intList
