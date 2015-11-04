@@ -49,14 +49,14 @@ def importAllGlifFiles(font, dirName=None, doProgress=True, bar=None):
 			if hasattr(glyph, "note"):
 				flGlyph.note = glyph.note  # XXX must encode
 			if hasattr(glyph, "lib"):
-				from io import StringIO
+				from io import BytesIO
 				from robofab.plistlib import writePlist
 				lib = glyph.lib
 				if lib:
 					if len(lib) == 1 and "org.robofab.fontlab.customdata" in lib:
 						data = lib["org.robofab.fontlab.customdata"].data
 					else:
-						f = StringIO()
+						f = BytesIO()
 						writePlist(glyph.lib, f)
 						data = f.getvalue()
 					flGlyph.customdata = data
