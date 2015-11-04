@@ -26,6 +26,11 @@ try:
 except NameError:
 	from sets import Set as set
 
+try:
+	basestring
+except NameError:
+	basestring = str
+
 # local encoding
 if os.name in ["mac", "posix"]:
 	LOCAL_ENCODING = "macroman"
@@ -942,7 +947,7 @@ class RFont(BaseFont):
 			raise RoboFabError("filename cannot contain periods.").with_traceback(fileName)
 		fileName = '.'.join([fileName, suffix])
 		finalPath = os.path.join(filePath, fileName)
-		if isinstance(finalPath, str):
+		if isinstance(finalPath, basestring):
 			finalPath = finalPath.encode("utf-8")
 		# generate is (oddly) an application level method
 		# rather than a font level method. because of this,
@@ -2350,7 +2355,7 @@ class RGroups(BaseGroups):
 	
 	def __setitem__(self, key, value):
 		# override baseclass so that data is stored in FL classes
-		if not isinstance(key, str):
+		if not isinstance(key, basestring):
 			raise RoboFabError('key must be a string')
 		if not isinstance(value, list):
 			raise RoboFabError('group must be a list')
@@ -2822,7 +2827,7 @@ class RInfo(BaseInfo):
 			warn("The width attribute has been deprecated. Use the new openTypeOS2WidthClass attribute.", DeprecationWarning)
 			attr = "openTypeOS2WidthClass"
 		if attr == "openTypeOS2WidthClass":
-			if isinstance(value, str) and value not in _openTypeOS2WidthClass_toFL:
+			if isinstance(value, basestring) and value not in _openTypeOS2WidthClass_toFL:
 				print("The openTypeOS2WidthClass value \"%s\" cannot be found in the OpenType OS/2 usWidthClass specification. The value will be set into the FontLab file for now." % value)
 				self._object.width = value
 			else:
