@@ -22,6 +22,11 @@ from fontTools.pens.basePen import AbstractPen
 
 from defcon.objects.color import Color as DefconColor
 
+try:
+	basestring
+except NameError:
+	basestring = str
+
 # ----
 # Base
 # ----
@@ -2522,7 +2527,7 @@ class BaseFeatures(RBaseObject):
 		return self._text
 
 	def _set_text(self, value):
-		assert isinstance(value, str)
+		assert isinstance(value, basestring)
 		self._text = value
 
 	text = property(_get_text, _set_text, doc="raw feature text.")
@@ -2558,7 +2563,7 @@ class BaseGroups(dict):
 	
 	def __setitem__(self, key, value):
 		#override base class to insure proper data is being stored
-		if not isinstance(key, str):
+		if not isinstance(key, basestring):
 			raise RoboFabError('key must be a string')
 		if not isinstance(value, list):
 			raise RoboFabError('group must be a list')
@@ -2649,7 +2654,7 @@ class BaseKerning(RBaseObject):
 		if isinstance(key, tuple):
 			pair = key
 			return self.get(pair)
-		elif isinstance(key, str):
+		elif isinstance(key, basestring):
 			raise RoboFabError('kerning pair must be a tuple: (left, right)')
 		else:
 			keys = self.keys()
@@ -2762,9 +2767,9 @@ class BaseKerning(RBaseObject):
 			count = 0
 		lgte = leftGlyphsToEliminate
 		rgte = rightGlyphsToEliminate
-		if isinstance(lgte, str):
+		if isinstance(lgte, basestring):
 			lgte = [lgte]
-		if isinstance(rgte, str):
+		if isinstance(rgte, basestring):
 			rgte = [rgte]
 		for pair in self.keys():
 			left, right = pair
@@ -2805,7 +2810,7 @@ class BaseKerning(RBaseObject):
 		occurances of that glyph in the kerning pairs as the value
 		glyphsToCount can be a string: 'a' or list: ['a', 'b']"""
 		gtc = glyphsToCount
-		if isinstance(gtc, str):
+		if isinstance(gtc, basestring):
 			gtc = [gtc]
 		gtcDict = {}
 		for glyph in gtc:
