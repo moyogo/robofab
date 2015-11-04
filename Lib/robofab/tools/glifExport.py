@@ -18,9 +18,9 @@ def exportGlyph(glyphName, flGlyph, glyphSet):
 		glyph.note = flGlyph.note
 	customdata = flGlyph.customdata
 	if customdata:
-		from io import StringIO
+		from io import BytesIO
 		from robofab.plistlib import readPlist, Data
-		f = StringIO(customdata)
+		f = BytesIO(customdata)
 		try:
 			glyph.lib = readPlist(f)
 		except: # XXX ugh, plistlib can raise lots of things
