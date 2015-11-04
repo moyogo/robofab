@@ -14,7 +14,7 @@ from robofab.pens.flPen import FLPointPen, FLPointContourPen
 from robofab import RoboFabError
 import os
 from robofab.plistlib import Data, Dict, readPlist, writePlist
-from io import StringIO
+from io import BytesIO
 import ufoLib
 from warnings import warn
 import datetime
@@ -433,7 +433,7 @@ def setMaskToGlyph(maskGlyph, targetGlyph, clear=True):
 def _get_lib(self):
 	data = self._object.customdata
 	if data:
-		f = StringIO(data)
+		f = BytesIO(data)
 		try:
 			pList = readPlist(f)
 		except: # XXX ugh, plistlib can raise lots of things
@@ -2590,7 +2590,7 @@ class RLib(BaseLib):
 		elif len(self) == 1 and "org.robofab.fontlab.customdata" in self:
 			data = self["org.robofab.fontlab.customdata"].data
 		else:
-			f = StringIO()
+			f = BytesIO()
 			writePlist(self, f)
 			data = f.getvalue()
 			f.close()
