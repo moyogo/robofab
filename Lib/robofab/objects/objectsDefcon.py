@@ -748,7 +748,7 @@ class RLayer(BaseLayer):
 	# dict behavior
 
 	def keys(self):
-		return self._object.keys()
+		return list(self._object.keys())
 
 	def __contains__(self, glyphName):
 		return glyphName in self._object
@@ -808,18 +808,18 @@ class RGlyph(BaseGlyph):
 
 	def _set_unicodes(self, value):
 		if not isinstance(value, list):
-			raise RoboFabError, "unicodes must be a list"
+			raise RoboFabError("unicodes must be a list")
 		self._objects.unicodes = value
 
 	unicodes = property(_get_unicodes, _set_unicodes, doc="all unicode values for the glyph")
 
 	def _get_unicode(self):
-		return self._object.unicode
+		return self._object.str
 
 	def _set_unicode(self, value):
-		self._object.unicode = value
+		self._object.str = value
 
-	unicode = property(_get_unicode, _set_unicode, doc="first unicode value for the glyph")
+	str = property(_get_unicode, _set_unicode, doc="first unicode value for the glyph")
 
 	# Metrics
 
@@ -1261,7 +1261,7 @@ class RSegment(BaseSegment):
 			# do nothing
 			pass
 		else:
-			raise RoboFabError, 'unknown segment type'
+			raise RoboFabError('unknown segment type')
 		self._setDefconContourDirty()
 
 	type = property(_get_type, _set_type, doc="type of the segment")
@@ -1523,7 +1523,8 @@ class RComponent(BaseComponent):
 		xScale, xyScale, yxScale, yScale, xOffset, yOffset = self._object.transformation
 		return xOffset, yOffset
 
-	def _set_offset(self, (x, y)):
+	def _set_offset(self, xxx_todo_changeme):
+		(x, y) = xxx_todo_changeme
 		xScale, xyScale, yxScale, yScale, xOffset, yOffset = self._object.transformation
 		self._object.transformation = (xScale, xyScale, yxScale, yScale, x, y)
 
@@ -1533,14 +1534,16 @@ class RComponent(BaseComponent):
 		xScale, xyScale, yxScale, yScale, xOffset, yOffset = self._object.transformation
 		return xScale, yScale
 
-	def _set_scale(self, (x, y)):
+	def _set_scale(self, xxx_todo_changeme1):
+		(x, y) = xxx_todo_changeme1
 		xScale, xyScale, yxScale, yScale, xOffset, yOffset = self._object.transformation
 		self._object.transformation = (x, xyScale, yxScale, y, xOffset, yOffset)
 
 	scale = property(_get_scale, _set_scale, doc="the scale of the component")
 
-	def move(self, (x, y)):
+	def move(self, xxx_todo_changeme2):
 		"""Move the component"""
+		(x, y) = xxx_todo_changeme2
 		self._object.move((x, y))
 
 	def decompose(self):
@@ -1598,20 +1601,20 @@ class _RDict(RBaseObject):
 		del self._object[key]
 
 	def __iter__(self):
-		for key in self.keys():
+		for key in list(self.keys()):
 			yield key
 
 	def clear(self):
 		self._object.clear()
 
 	def keys(self):
-		return self._object.keys()
+		return list(self._object.keys())
 
 	def values(self):
-		return self._object.values()
+		return list(self._object.values())
 
 	def items(self):
-		return self._object.items()
+		return list(self._object.items())
 
 	def pop(self, key, default=None):
 		return self._object.pop(key, default)
@@ -1659,7 +1662,7 @@ class RFeatures(BaseFeatures):
 		return self._object.text
 
 	def _set_text(self, value):
-		assert isinstance(value, (basestring, None))
+		assert isinstance(value, (str, None))
 		self._object.text = value
 
 	text = property(_get_text, _set_text, doc="raw feature text.")
@@ -1747,59 +1750,59 @@ class RLib(_RDict):
 if __name__ == "__main__":
 	from defcon.test.testTools import getTestFontPath
 	font = RFont(getTestFontPath())
-	print font
-	print
-	print "layers:", font.layers
-	print
-	print "info:", font.info
-	print
-	print "groups:", font.groups
-	print
-	print "kerning:", font.kerning
-	print
-	print "features:", font.features
-	print
-	print "lib:", font.lib
-	print
-	print "layer:", font.layers[None]
+	print(font)
+	print()
+	print("layers:", font.layers)
+	print()
+	print("info:", font.info)
+	print()
+	print("groups:", font.groups)
+	print()
+	print("kerning:", font.kerning)
+	print()
+	print("features:", font.features)
+	print()
+	print("lib:", font.lib)
+	print()
+	print("layer:", font.layers[None])
 	font.layers[None].color = ".5, 1, 0, .2"
-	print "layer.color:", font.layers[None].color
-	print "layer.lib:", font.layers[None].lib
-	print
-	print "glyph:", font.layers[None]["A"]
-	print "glyph.leftMargin:", font.layers[None]["A"].leftMargin
-	print "contours:", list(font.layers[None]["A"])
-	print "contour:", font.layers[None]["A"][0]
-	print "points:", font.layers[None]["A"][0].points
-	print "segments:", font.layers[None]["A"][0].segments
+	print("layer.color:", font.layers[None].color)
+	print("layer.lib:", font.layers[None].lib)
+	print()
+	print("glyph:", font.layers[None]["A"])
+	print("glyph.leftMargin:", font.layers[None]["A"].leftMargin)
+	print("contours:", list(font.layers[None]["A"]))
+	print("contour:", font.layers[None]["A"][0])
+	print("points:", font.layers[None]["A"][0].points)
+	print("segments:", font.layers[None]["A"][0].segments)
 	
 	for seg in font.layers[None]["A"][0].segments:
 		seg.round()
 	
-	print "bPoints:", font.layers[None]["A"][0].bPoints
-	print
+	print("bPoints:", font.layers[None]["A"][0].bPoints)
+	print()
 	bPoints = font.layers[None]["A"][0].bPoints
 	for bPoint in bPoints:
-		print "bPoint:", bPoint
-		print "bPoint.anchor:", bPoint.anchor
-		print "bPoint.bcpIn:", bPoint.bcpIn
+		print("bPoint:", bPoint)
+		print("bPoint.anchor:", bPoint.anchor)
+		print("bPoint.bcpIn:", bPoint.bcpIn)
 		bPoint.bcpIn = (10, 10)
-		print bPoint.bcpIn
-		print "bPoint.bcpOut:", bPoint.bcpOut
-		print 
+		print(bPoint.bcpIn)
+		print("bPoint.bcpOut:", bPoint.bcpOut)
+		print() 
 	for point in font.layers[None]["A"][0].points:
-		print "point", point
-		print "point.getParent():", point.getParent()
+		print("point", point)
+		print("point.getParent():", point.getParent())
 	
 	
-	print 
-	print "anchors:", font.layers[None]["A"].anchors
-	print "components for 'C':", font.layers[None]["C"].components
-	print "decompose..."
+	print() 
+	print("anchors:", font.layers[None]["A"].anchors)
+	print("components for 'C':", font.layers[None]["C"].components)
+	print("decompose...")
 	for component in font.layers[None]["C"].components:
 		component.decompose()
-	print "components for 'C':",  font.layers[None]["C"].components
+	print("components for 'C':",  font.layers[None]["C"].components)
 	### endless loop
 	#print font.layers[None]["A"].appendComponent("C")
 
-	print "done"
+	print("done")

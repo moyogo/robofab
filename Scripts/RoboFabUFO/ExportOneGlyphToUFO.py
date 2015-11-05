@@ -37,4 +37,4 @@ else:
 	from robofab.interface.all.dialogs import Message
 	Message("No glyphs selected for export.")
 	
-print 'done'
+print('done')

@@ -28,7 +28,7 @@ def _gatherTestCasesFromCallerByMagic():
 
 def _gatherTestCasesFromDict(d):
 	testCases = []
-	for ob in d.values():
+	for ob in list(d.values()):
 		if isinstance(ob, type) and issubclass(ob, unittest.TestCase):
 			testCases.append(ob)
 	return testCases
@@ -453,8 +453,8 @@ fontInfoVersion3 = {
 											# identifier
 											dict(x=100, y=200, angle=45, identifier="guide1"),
 											dict(x=100, y=200, angle=45, identifier="guide2"),
-											dict(x=100, y=200, angle=45, identifier=u"\x20"),
-											dict(x=100, y=200, angle=45, identifier=u"\x7E"),
+											dict(x=100, y=200, angle=45, identifier="\x20"),
+											dict(x=100, y=200, angle=45, identifier="\x7E"),
 											# colors
 											dict(x=100, y=200, angle=45, color="0,0,0,0"),
 											dict(x=100, y=200, angle=45, color="1,0,0,0"),
